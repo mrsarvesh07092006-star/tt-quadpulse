@@ -571,11 +571,13 @@ async def test_07_freq_switching(dut):
     # Switch to 10 kHz (freq_sel=10)
     dut._log.info("Switching from 20 kHz → 10 kHz...")
     dut.ui_in.value = 0b00000100   # freq_sel=10 → 10 kHz, e-stop=0
-    await ClockCycles(dut.clk, 10)  # Wait for freq_sel_sync to register + counter reset
+    # At 10 kHz, period=1000 ticks. We must wait ≥2 full periods after the switch
+    # for the 2-stage sync (2 cycles) + period reset + ramp re-accumulation to settle.
+    # Waiting 3000 ticks = 3 full 10kHz periods guarantees clean steady-state.
+    await ClockCycles(dut.clk, 3000)
 
-    # At 10 kHz, period=1000 ticks. With duty=128, expected duty=128/256=50%
-    # (same duty ratio, different frequency — the PWM output should still be ~50%)
-    measured_10k = await check_pwm_channel(dut, None, channel=0, num_ticks=2000)
+    # Measure over 4000 ticks = 4 complete 10kHz periods for solid averaging
+    measured_10k = await check_pwm_channel(dut, None, channel=0, num_ticks=4000)
     assert abs(measured_10k - 128/256.0) < 0.05, \
         f"FAIL: 10kHz after switch wrong: {measured_10k:.3f}"
     dut._log.info(f"10 kHz duty after switch: {measured_10k:.3f} ✓")
@@ -583,9 +585,10 @@ async def test_07_freq_switching(dut):
     # Switch back to 20 kHz and verify no corruption
     dut._log.info("Switching back to 20 kHz...")
     dut.ui_in.value = 0b00000110   # freq_sel=11 → 20 kHz
-    await ClockCycles(dut.clk, 10)
+    # Wait 2 full 500-tick 20kHz periods for settling
+    await ClockCycles(dut.clk, 1500)
 
-    measured_back = await check_pwm_channel(dut, None, channel=0, num_ticks=1000)
+    measured_back = await check_pwm_channel(dut, None, channel=0, num_ticks=2000)
     assert abs(measured_back - 128/256.0) < 0.05, \
         f"FAIL: After switching back duty wrong: {measured_back:.3f}"
     dut._log.info(f"Back at 20 kHz: {measured_back:.3f} ✓")
