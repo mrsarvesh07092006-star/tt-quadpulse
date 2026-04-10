@@ -232,7 +232,7 @@ async def test_01_reset(dut):
     model = QuadPulseModel()
 
     # Start clock
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())  # 10 MHz
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())  # 10 MHz
 
     # Apply reset
     dut.ena.value    = 1
@@ -276,7 +276,7 @@ async def test_02_spi_duty_cycle(dut):
     dut._log.info("=== TEST 2: SPI duty cycle loading ===")
     model = QuadPulseModel()
 
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())
 
     # Reset
     dut.ena.value    = 1
@@ -318,7 +318,7 @@ async def test_03_emergency_stop(dut):
     dut._log.info("=== TEST 3: Emergency stop ===")
     model = QuadPulseModel()
 
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())
 
     # Reset
     dut.ena.value    = 1
@@ -377,7 +377,7 @@ async def test_04_channel_independence(dut):
 
     dut._log.info("=== TEST 4: Channel independence ===")
 
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())
 
     dut.ena.value    = 1
     dut.rst_n.value  = 0
@@ -422,7 +422,7 @@ async def test_05_boundary_values(dut):
 
     dut._log.info("=== TEST 5: Boundary duty values ===")
 
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())
 
     dut.ena.value    = 1
     dut.rst_n.value  = 0
@@ -483,7 +483,7 @@ async def test_06_spi_abort(dut):
 
     dut._log.info("=== TEST 6: SPI frame abort ===")
 
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())
 
     # Reset
     dut.ena.value    = 1
@@ -547,7 +547,7 @@ async def test_07_freq_switching(dut):
 
     dut._log.info("=== TEST 7: Frequency switching ===")
 
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())
 
     # Reset at 20 kHz
     dut.ena.value    = 1
@@ -608,7 +608,7 @@ async def test_08_simultaneous_all_channels(dut):
 
     dut._log.info("=== TEST 8: Simultaneous 4-channel measurement ===")
 
-    cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())
 
     # Reset
     dut.ena.value    = 1
